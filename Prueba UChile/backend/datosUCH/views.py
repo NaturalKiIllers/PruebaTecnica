@@ -43,7 +43,6 @@ class EventFilterViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     pagination_class = PageNumberPagination
     pagination_class.page_size = 20  # Establece el tamaño de página deseado
-    # def list(self, request, *args, **kwargs):
     queryset = User.objects.all()
     def list(self, request, *args, **kwargs):
         username = request.query_params.get('username')
@@ -69,32 +68,17 @@ class EventFilterViewSet(viewsets.ModelViewSet):
             key_contexts = course.values_list('key_context', flat=True)
             queryset = queryset.filter(key_context__in=key_contexts)
         if fecha:
-            # fecha_d = datetime.strptime(fecha_d, "%Y-%m-%d")
             queryset = queryset.filter(fecha=fecha)
-            eventos_count = queryset.count()
+
 
         if hora:
             queryset = queryset.filter(hora=hora)
-            eventos_count = queryset.count()
-
-            # Calcular la cantidad de eventos registrados según la unidad de tiempo
-            eventos_count = queryset.count()
-            eventos = queryset.filter(hora=hora).values_list('event_type', flat=True).distinct() 
-            # Contar la cantidad de eventos diferentes
-            cantidad_eventos = len(eventos)
-            # Mostrar la cantidad de eventos en un gráfico
-            # plt.clf()
-            # plt.bar(hora, eventos_count)
-            # plt.xlabel('Tiempo')
-            # plt.ylabel('Cantidad de eventos')
-            # plt.title('Eventos registrados a lo largo del tiempo')
 
 
         event_serializer = EventSerializer(queryset, many=True)
 
 
         data = {
-            # 'eventos_count': eventos_count,
             'events': event_serializer.data,
         }
         return Response(data)
